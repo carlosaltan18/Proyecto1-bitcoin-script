@@ -1,4 +1,4 @@
-package org.example;
+package org.example.parser;
 
 public enum TokenType {
     OPERATOR,
