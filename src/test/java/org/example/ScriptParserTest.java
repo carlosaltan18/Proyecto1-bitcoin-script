@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ScriptParserTest {
     static ScriptParser parser;
@@ -29,7 +30,7 @@ public class ScriptParserTest {
         assertEquals(new Token(TokenType.DATA, "XD"), list.get(2));
     }
 
-        @Test
+    @Test
     void shouldAllowExplicitPushDataAllTokens() {
         List<Token> list = parser.parse("OP_WHATEVER PUSHDATA DATA PUSHDATA XD");
         assertEquals(3, list.size());
@@ -37,6 +38,13 @@ public class ScriptParserTest {
         assertEquals(new Token(TokenType.OPERATOR, "OP_WHATEVER"), list.get(0));
         assertEquals(new Token(TokenType.DATA, "DATA"), list.get(1));
         assertEquals(new Token(TokenType.DATA, "XD"), list.get(2));
+    }
+
+    @Test
+    void shouldThrowErrorWhenPushDataWasUsedButNoDataWasGiven() {
+        assertThrows(RuntimeException.class, () -> {
+            parser.parse("OP_WHATEVER DATA PUSHDATA");
+        }, "PUSHDATA without data");
     }
 
 }

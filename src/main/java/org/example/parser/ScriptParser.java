@@ -13,8 +13,14 @@ public class ScriptParser {
             String word = words[i];
 
             if (word.equals("PUSHDATA")) {
-                if (i + 1 < words.length) {
-                    tokens.add(new Token(TokenType.DATA, words[i + 1]));
+                final boolean hasEnoughArguments = i + 1 < words.length;
+                if (hasEnoughArguments) {
+                    String next = words[i + 1];
+                    // @TODO: When Opcodes are defined, check if the next word is an OP
+                    // if (next.startsWith("OP")) {
+                    //     throw new RuntimeException("PUSHDATA expected data, and an OPERATION was found instead.");
+                    // }
+                    tokens.add(new Token(TokenType.DATA, next));
                     i++; // Skip the next word since it's already processed
                     continue;
                 } else {
@@ -22,6 +28,7 @@ public class ScriptParser {
                 }
             }
 
+            // @TODO: When Opcodes are defined, replace this prefix check with an actual set check
             if (word.startsWith("OP")) {
                 tokens.add(new Token(TokenType.OPERATOR, word));
             } else {

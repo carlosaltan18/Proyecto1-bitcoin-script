@@ -18,5 +18,4 @@ public record Token(TokenType type, String value) {
     public int hashCode() {
         return Objects.hash(type, value);
     }
-
 }
