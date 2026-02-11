@@ -1,6 +1,5 @@
-package org.example;
+package org.example.parser;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 public record Token(TokenType type, String value) {
