@@ -22,7 +22,7 @@ public class ScriptParserTest {
 
     @Test
     void shouldReturnAllTokens() {
-        List<Token> list = parser.parse("OP_WHATEVER DATA XD");
+        List<Token> list = parser.parseWord("OP_WHATEVER DATA XD");
         assertEquals(3, list.size());
 
         assertEquals(new Token(TokenType.OPERATOR, "OP_WHATEVER"), list.get(0));
@@ -32,7 +32,7 @@ public class ScriptParserTest {
 
     @Test
     void shouldAllowExplicitPushDataAllTokens() {
-        List<Token> list = parser.parse("OP_WHATEVER PUSHDATA DATA PUSHDATA XD");
+        List<Token> list = parser.parseWord("OP_WHATEVER PUSHDATA DATA PUSHDATA XD");
         assertEquals(3, list.size());
 
         assertEquals(new Token(TokenType.OPERATOR, "OP_WHATEVER"), list.get(0));
@@ -43,7 +43,7 @@ public class ScriptParserTest {
     @Test
     void shouldThrowErrorWhenPushDataWasUsedButNoDataWasGiven() {
         assertThrows(RuntimeException.class, () -> {
-            parser.parse("OP_WHATEVER DATA PUSHDATA");
+            parser.parseWord("OP_WHATEVER DATA PUSHDATA");
         }, "PUSHDATA without data");
     }
 
