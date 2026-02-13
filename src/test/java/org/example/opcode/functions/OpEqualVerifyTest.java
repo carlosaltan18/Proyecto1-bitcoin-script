@@ -20,4 +20,27 @@ class OpEqualVerifyTest {
 
     }
 
+    @Test
+    void shouldThrowWhenValuesAreDifferent(){
+        ExecutionContext context = new ExecutionContext();
+        context.getStack().push("abc".getBytes());
+        context.getStack().push("def".getBytes());
+
+        OpEqualVerify op = new OpEqualVerify();
+
+        assertThrows(RuntimeException.class, () -> op.execute(context));
+    }
+
+    @Test
+    void shouldThrowWhenNotEnoughElements(){
+        ExecutionContext context = new ExecutionContext();
+        context.getStack().push("uno".getBytes());
+
+        OpEqualVerify op = new OpEqualVerify();
+
+        assertThrows(RuntimeException.class, () -> op.execute(context));
+
+
+    }
+
 }

@@ -22,7 +22,7 @@ public class OpCheckSig implements Opcode {
         byte[] pubKey = context.getStack().pop();
         byte[] sig = context.getStack().pop();
 
-        boolean valid = CryptoMock.chechSig(sig, pubKey);
+        boolean valid = CryptoMock.checkSig(sig, pubKey);
 
         context.getStack().push(valid ? new byte[]{1} : new byte[]{0});
 

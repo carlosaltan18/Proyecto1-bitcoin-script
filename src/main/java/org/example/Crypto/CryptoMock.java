@@ -10,7 +10,7 @@ public class CryptoMock {
         return Arrays.copyOfRange(data, 0, Math.min(4, data.length));
     }
 
-    public static boolean chechSig(byte[] sig, byte[] pubKey){
+    public static boolean checkSig(byte[] sig, byte[] pubKey){
 
         // tambien simulacion, si ambos tiene contenido, lo tomamos como valido
         return sig.length > 0 && pubKey.length > 0;

@@ -19,4 +19,6 @@ public class OpHash160 implements Opcode {
 
         context.getStack().push(hashed);
     }
+
+
 }
