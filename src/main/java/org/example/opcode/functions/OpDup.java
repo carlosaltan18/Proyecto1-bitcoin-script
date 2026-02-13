@@ -22,7 +22,7 @@ public class OpDup implements Opcode {
         byte[] top = stack.peek();
 
         if (stack.isEmpty()) {
-            throw new RuntimeException("OpDup is not applicable for an empty stack");
+            throw new RuntimeException("OpDup is not applicable to an empty stack");
         }
 
         stack.push(top);
