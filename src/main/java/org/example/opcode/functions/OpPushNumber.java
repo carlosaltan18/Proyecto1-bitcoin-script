@@ -5,7 +5,7 @@ import org.example.opcode.Opcode;
 
 
 /**
- * Class for pushing a number 1 into a stack
+ * Class for pushing a number into a stack
  */
 public class OpPushNumber implements Opcode {
     final private int number;
@@ -16,8 +16,10 @@ public class OpPushNumber implements Opcode {
 
     @Override
     public void execute(ExecutionContext context) {
+        var stack = context.getStack();
+
         //cast int number to byte :p
-        context.getStack().push(new byte[]{(byte)number});
+        stack.push(new byte[]{(byte)number});
     }
 
 }
