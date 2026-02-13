@@ -19,7 +19,7 @@ public class ScriptInterpreter {
      * @param stackScript stack
      * @return boolean
      */
-    public boolean excute(List<Token> tokens, StackScript stackScript ) {
+    public boolean execute(List<Token> tokens, StackScript stackScript ) {
         ExecutionContext context = new ExecutionContext();
         try{
             for(Token token : tokens){
