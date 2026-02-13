@@ -21,7 +21,7 @@ class ScriptInterpreterTest {
                 new Token(TokenType.DATA, "1")
         );
 
-        boolean result = interpreter.excute(tokens, stack);
+        boolean result = interpreter.execute(tokens, stack);
 
         assertTrue(result);
     }
@@ -31,7 +31,7 @@ class ScriptInterpreterTest {
         ScriptInterpreter interpreter = new ScriptInterpreter();
         StackScript stack = new StackScript();
 
-        boolean result = interpreter.excute(List.of(), stack);
+        boolean result = interpreter.execute(List.of(), stack);
 
         assertFalse(result);
     }
@@ -45,7 +45,7 @@ class ScriptInterpreterTest {
                 new Token(TokenType.OPERATOR, "OP_UNKNOWN")
         );
 
-        boolean result = interpreter.excute(tokens, stack);
+        boolean result = interpreter.execute(tokens, stack);
 
         assertFalse(result);
     }
@@ -59,7 +59,7 @@ class ScriptInterpreterTest {
                 new Token(TokenType.OPERATOR, "OP_0")
         );
 
-        boolean result = interpreter.excute(tokens, stack);
+        boolean result = interpreter.execute(tokens, stack);
 
         assertFalse(result);
     }
@@ -73,7 +73,7 @@ class ScriptInterpreterTest {
                 new Token(TokenType.DATA, "A")
         );
 
-        boolean result = interpreter.excute(tokens, stack);
+        boolean result = interpreter.execute(tokens, stack);
 
         assertTrue(result);
     }
