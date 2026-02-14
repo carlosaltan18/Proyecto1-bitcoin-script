@@ -3,6 +3,8 @@ package org.example.opcode.functions;
 import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
 
+import java.util.Arrays;
+
 /**
  * @author Daniel Vásquez
  * @see Opcode for the Overrided method.
@@ -19,12 +21,14 @@ public class OpDup implements Opcode {
     public void execute(ExecutionContext context) {
         var stack = context.getStack();
 
-        byte[] top = stack.peek();
+        var top = stack.peek();
 
         if (stack.isEmpty()) {
             throw new RuntimeException("OpDup is not applicable to an empty stack");
         }
 
-        stack.push(top);
+        var copy = Arrays.copyOf(top, top.length);
+
+        stack.push(copy);
     }
 }

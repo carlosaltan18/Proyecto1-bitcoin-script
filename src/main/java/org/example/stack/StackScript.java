@@ -5,14 +5,14 @@ import java.util.Deque;
 /**
  * class implement the stack Deque
  */
-public class StackScript {
-    private final Deque<byte[]> stack = new ArrayDeque<>();
+public class StackScript<T> {
+    private final Deque<T> stack = new ArrayDeque<>();
 
     /**
      *Method to add a byte array to the stack
      * @param data byte array
      */
-    public void  push(byte[] data) {
+    public void  push(T data) {
         stack.push(data);
     }
 
@@ -20,7 +20,7 @@ public class StackScript {
      * Method to delete an get the first element on the stack
      * @return byte[]
      */
-    public byte[] pop() {
+    public T pop() {
         if (stack.isEmpty()) {
             throw new RuntimeException("Stack underflow");
         }
@@ -31,7 +31,10 @@ public class StackScript {
      * Method to get the firts element in the stack
      * @return byte[]
      */
-    public byte[] peek() {
+    public T peek() {
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Stack underflow");
+        }
         return stack.peek();
     }
 

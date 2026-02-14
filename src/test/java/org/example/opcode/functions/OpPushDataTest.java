@@ -19,11 +19,12 @@ class OpPushDataTest {
     @Test
     void testPushDataCorrectValue() {
         ExecutionContext context = new ExecutionContext();
-        OpPushData op = new OpPushData("test".getBytes());
+        byte[] expected = "test".getBytes();
 
+        OpPushData op = new OpPushData(expected);
         op.execute(context);
 
-        assertArrayEquals("test".getBytes(), context.getStack().peek());
+        assertArrayEquals(expected, (byte[]) context.getStack().peek());
     }
 
     @Test

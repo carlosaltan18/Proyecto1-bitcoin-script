@@ -46,7 +46,6 @@ public class ScriptInterpreter {
             if (context.getStack().isEmpty()) {
                 return false;
             }
-
             return context.getStack().pop()[0] != 0;
 
         } catch (Exception e) {

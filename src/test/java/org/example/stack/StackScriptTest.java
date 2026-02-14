@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class StackScriptTest {
     @Test
     void testPushIncreasesSize() {
-        StackScript stack = new StackScript();
+        StackScript<byte[]> stack = new StackScript<>();
         stack.push(new byte[]{1});
         assertEquals(1, stack.size());
     }
 
     @Test
     void testPopReturnsLastElement() {
-        StackScript stack = new StackScript();
+        StackScript<byte[]> stack = new StackScript<>();
         stack.push(new byte[]{1});
         stack.push(new byte[]{2});
 
@@ -24,7 +24,7 @@ class StackScriptTest {
 
     @Test
     void testPeekReturnsTopWithoutRemoving() {
-        StackScript stack = new StackScript();
+        StackScript<byte[]> stack = new StackScript<>();
         stack.push(new byte[]{5});
 
         byte[] result = stack.peek();
@@ -35,13 +35,13 @@ class StackScriptTest {
 
     @Test
     void testIsEmptyInitiallyTrue() {
-        StackScript stack = new StackScript();
+        StackScript<byte[]> stack = new StackScript<>();
         assertTrue(stack.isEmpty());
     }
 
     @Test
     void testPopThrowsExceptionWhenEmpty() {
-        StackScript stack = new StackScript();
+        StackScript<byte[]> stack = new StackScript<>();
 
         RuntimeException exception = assertThrows(RuntimeException.class, stack::pop);
 
