@@ -23,7 +23,7 @@ class OpPushZeroTest {
 
         op.execute(context);
 
-        byte[] result = context.getStack().peek();
+        var result = context.getStack().peek();
         assertEquals(0, result.length);
     }
 

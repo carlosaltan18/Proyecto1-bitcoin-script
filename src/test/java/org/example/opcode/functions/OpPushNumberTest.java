@@ -22,7 +22,7 @@ public class OpPushNumberTest {
         op.execute(context);
 
         assertEquals(1, context.getStack().size());
-        assertArrayEquals(new byte[]{5}, context.getStack().pop());
+        assertArrayEquals(new byte[]{5}, (byte[])context.getStack().pop());
     }
 
     @Test
@@ -31,7 +31,7 @@ public class OpPushNumberTest {
 
         op.execute(context);
 
-        assertArrayEquals(new byte[]{0}, context.getStack().pop());
+        assertArrayEquals(new byte[]{0}, (byte[])context.getStack().pop());
     }
 
     @Test
@@ -44,8 +44,8 @@ public class OpPushNumberTest {
 
         assertEquals(2, context.getStack().size());
 
-        assertArrayEquals(new byte[]{7}, context.getStack().pop());
-        assertArrayEquals(new byte[]{3}, context.getStack().pop());
+        assertArrayEquals(new byte[]{7}, (byte[]) context.getStack().pop());
+        assertArrayEquals(new byte[]{3},(byte[]) context.getStack().pop());
     }
 
     @Test
@@ -58,8 +58,8 @@ public class OpPushNumberTest {
         op2.execute(context);
         op3.execute(context);
 
-        assertArrayEquals(new byte[]{3}, context.getStack().pop());
-        assertArrayEquals(new byte[]{2}, context.getStack().pop());
-        assertArrayEquals(new byte[]{1}, context.getStack().pop());
+        assertArrayEquals(new byte[]{3}, (byte[])context.getStack().pop());
+        assertArrayEquals(new byte[]{2},(byte[]) context.getStack().pop());
+        assertArrayEquals(new byte[]{1},(byte[]) context.getStack().pop());
     }
 }

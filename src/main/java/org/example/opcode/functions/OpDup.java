@@ -21,7 +21,7 @@ public class OpDup implements Opcode {
     public void execute(ExecutionContext context) {
         var stack = context.getStack();
 
-        byte[] top = stack.peek();
+        var top = stack.peek();
 
         if (stack.isEmpty()) {
             throw new RuntimeException("OpDup is not applicable to an empty stack");

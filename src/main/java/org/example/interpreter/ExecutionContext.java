@@ -6,9 +6,9 @@ import org.example.stack.StackScript;
  * Class that serves to wrap the stack
  */
 public class ExecutionContext {
-    private final StackScript stack = new StackScript();
+    private final StackScript<byte[]> stack = new StackScript<>();
 
-    public StackScript getStack() {
+    public StackScript<byte[]> getStack() {
         return stack;
     }
 }
