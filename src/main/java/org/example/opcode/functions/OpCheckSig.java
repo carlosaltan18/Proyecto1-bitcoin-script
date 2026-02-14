@@ -5,13 +5,13 @@ import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
 
 /**
- * A class tha simululates
+ * A class tha serves to validate the firm and key public
  */
 
 public class OpCheckSig implements Opcode {
     /**
-     *
-     * @param context
+     *  execute the verify
+     * @param context context of the stack
      */
     @Override
     public void execute(ExecutionContext context) {

@@ -23,31 +23,22 @@ public class ScriptInterpreter {
         ExecutionContext context = new ExecutionContext();
 
         try {
-
             for (Token token : tokens) {
-
                 if (token.type() == TokenType.DATA) {
-
                     new OpPushData(token.value().getBytes())
                             .execute(context);
-
                 } else {
-
                     Opcode opcode = OpcodeImplements.get(token.value());
-
                     if (opcode == null) {
                         throw new RuntimeException("Unknown opcode " + token.value());
                     }
-
                     opcode.execute(context);
                 }
             }
-
             if (context.getStack().isEmpty()) {
                 return false;
             }
             return context.getStack().pop()[0] != 0;
-
         } catch (Exception e) {
             return false;
         }

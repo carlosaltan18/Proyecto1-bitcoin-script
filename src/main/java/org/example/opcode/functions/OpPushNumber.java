@@ -17,8 +17,6 @@ public class OpPushNumber implements Opcode {
     @Override
     public void execute(ExecutionContext context) {
         var stack = context.getStack();
-
-        //cast int number to byte :p
         stack.push(new byte[]{(byte)number});
     }
 
