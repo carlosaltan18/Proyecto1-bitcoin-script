@@ -29,8 +29,8 @@ public class OpcodeImplements {
         OPCODES.put("OP_BOOL_OR", new OpBoolOr());
         OPCODES.put("OP_NOT", new OpNot());
         OPCODES.put("OP_NUM_EQUALVERIFY", new OpNumEqualVerify());
-        OPCODES.put("OP_CHECK_MULTISIG", new OpCheckMultiSig());
-
+        OPCODES.put("OP_CHECKMULTISIG", new OpCheckMultiSig());
+        OPCODES.put("OP_IF", new OpIf());
     }
     public static Opcode get(String name) {
         return OPCODES.get(name);
