@@ -65,3 +65,15 @@ public class OpIfTest {
 
     @Test
     public void shouldHandleMultipleIfsInIfStack() {
+        context.getStack().push(new byte[]{1});
+        opIf.execute(context);
+
+        context.getStack().push(new byte[]{0});
+        opIf.execute(context);
+
+        assertEquals(2, context.getIfStack().size());
+        assertFalse(context.getIfStack().pop());
+        assertTrue(context.getIfStack().pop());
+    }
+
+}
