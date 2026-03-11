@@ -15,11 +15,9 @@ public class Main {
 
         ScriptParser parser = new ScriptParser();
         ScriptInterpreter interpreter = new ScriptInterpreter();
-        String scriptSig =
-                "PUSHDATA firma123 PUSHDATA pubKeyABC";
+        String scriptSig = "PUSHDATA firma12333 PUSHDATA pubcKKKeyABCC";
 
-        String scriptPubKey =
-                "OP_DUP OP_HASH160 PUSHDATA pubK OP_EQUALVERIFY OP_CHECKSIG";
+        String scriptPubKey = "OP_DUP OP_HASH160 PUSHDATA pubc OP_EQUALVERIFY OP_CHECKSIG";
         String fullScript = scriptSig + " " + scriptPubKey;
 
         try {

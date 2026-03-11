@@ -23,6 +23,14 @@ public class OpcodeImplements {
         OPCODES.put("OP_EQUALVERIFY", new OpEqualVerify());
         OPCODES.put("OP_HASH160", new OpHash160());
         OPCODES.put("OP_CHECKSIG", new OpCheckSig());
+        OPCODES.put("OP_ADD", new OpAdd());
+        OPCODES.put("OP_SUB", new OpSub());
+        OPCODES.put("OP_BOOL_AND", new OpBoolAnd());
+        OPCODES.put("OP_BOOL_OR", new OpBoolOr());
+        OPCODES.put("OP_NOT", new OpNot());
+        OPCODES.put("OP_NUM_EQUALVERIFY", new OpNumEqualVerify());
+        OPCODES.put("OP_CHECK_MULTISIG", new OpCheckMultiSig());
+
     }
     public static Opcode get(String name) {
         return OPCODES.get(name);
