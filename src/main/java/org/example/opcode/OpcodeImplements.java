@@ -23,7 +23,6 @@ public class OpcodeImplements {
         OPCODES.put("OP_EQUALVERIFY", new OpEqualVerify());
         OPCODES.put("OP_HASH160", new OpHash160());
         OPCODES.put("OP_CHECKSIG", new OpCheckSig());
-
     }
     public static Opcode get(String name) {
         return OPCODES.get(name);
