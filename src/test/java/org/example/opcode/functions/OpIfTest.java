@@ -17,63 +17,71 @@ public class OpIfTest {
     }
 
     @Test
-    public void shouldPushTrueToIfStackIfElementIsNotZero() {
+    public void shouldPushTrueToExecStackWhenTopIsNonZero() {
         context.getStack().push(new byte[]{1});
-
         opIf.execute(context);
 
         assertEquals(0, context.getStack().size());
-        assertFalse(context.getIfStack().isEmpty());
-        assertTrue(context.getIfStack().peek());
+        assertTrue(context.getExecStack().peek());
     }
 
     @Test
-    public void shouldPushFalseToIfStackIfElementIsZero() {
+    public void shouldPushFalseToExecStackWhenTopIsZero() {
         context.getStack().push(new byte[]{0});
-
         opIf.execute(context);
 
-        assertFalse(context.getIfStack().peek());
+        assertFalse(context.getExecStack().peek());
     }
 
     @Test
-    public void shouldPushFalseIfArrayIsEmpty() {
+    public void shouldPushFalseWhenTopIsEmptyArray() {
         context.getStack().push(new byte[]{});
-
         opIf.execute(context);
 
-        assertFalse(context.getIfStack().peek());
+        assertFalse(context.getExecStack().peek());
     }
 
     @Test
-    public void shouldTreatNonOneValuesAsTrue() {
+    public void shouldTreatAnyNonZeroByteAsTrue() {
         context.getStack().push(new byte[]{5});
+        opIf.execute(context);
+
+        assertTrue(context.getExecStack().peek());
+    }
+
+    @Test
+    public void shouldThrowWhenMainStackIsEmpty() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> opIf.execute(context));
+        assertEquals("OP_IF requires one element on the stack", ex.getMessage());
+    }
+
+    @Test
+    public void shouldPushFalseFrameWithoutPoppingWhenAlreadyInSkippedBranch() {
+        // Simulate being inside a false branch already.
+        context.getExecStack().push(false);
+        context.getStack().push(new byte[]{1});
 
         opIf.execute(context);
 
-        assertTrue(context.getIfStack().peek());
+        // Main stack must be untouched — no pop happened.
+        assertEquals(1, context.getStack().size());
+        // Nested frame must also be false.
+        assertFalse(context.getExecStack().peek());
+        // Both frames still present.
+        context.getExecStack().pop();
+        assertFalse(context.getExecStack().peek());
     }
 
     @Test
-    public void shouldFailIfStackIsEmpty() {
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                opIf.execute(context)
-        );
-
-        assertEquals("OP_IF requires one element", exception.getMessage());
-    }
-
-    @Test
-    public void shouldHandleMultipleIfsInIfStack() {
+    public void shouldSupportTrueNestedInsideTrueBranch() {
         context.getStack().push(new byte[]{1});
         opIf.execute(context);
 
-        context.getStack().push(new byte[]{0});
+        context.getStack().push(new byte[]{1});
         opIf.execute(context);
 
-        assertEquals(2, context.getIfStack().size());
-        assertFalse(context.getIfStack().pop());
-        assertTrue(context.getIfStack().pop());
+        assertTrue(context.getExecStack().peek()); // inner
+        context.getExecStack().pop();
+        assertTrue(context.getExecStack().peek()); // outer
     }
-
 }
