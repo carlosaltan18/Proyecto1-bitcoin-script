@@ -1,5 +1,7 @@
 package org.example.parser;
 
+import org.example.opcode.OpcodeImplements;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class ScriptParser {
      * @param input String with script
      * @return List of token
      */
-    public List<Token> parseWord(String input) {
+    public List<Token> parse(String input) {
 
         final String[] words = input.trim().split("\\s+");
         List<Token> tokens = new ArrayList<>();
@@ -34,7 +36,7 @@ public class ScriptParser {
                 continue;
             }
 
-            if (word.startsWith("OP_")) {
+            if (OpcodeImplements.get(word) != null) {
                 tokens.add(new Token(TokenType.OPERATOR, word));
             } else {
                 tokens.add(new Token(TokenType.DATA, word));

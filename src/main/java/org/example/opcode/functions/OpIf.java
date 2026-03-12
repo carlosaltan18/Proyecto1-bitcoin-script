@@ -4,22 +4,27 @@ import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
 
 /**
- * Class that serves to evaluate that the the top of the stack is different of 0
+ * OP_IF pops the top of the main stack and pushes a frame onto the exec stack.
+ * If we are already inside a skipped branch, no pop happens and the new frame
+ * is false, so the inner block is also skipped.
  */
 public class OpIf implements Opcode {
 
-    /**
-     * Method that serves to evaluate if the top is different of 0
-     * @param context Context of the stack
-     */
     @Override
-    public void execute(ExecutionContext context){
-        if(context.getStack().size() < 1){
-            throw new RuntimeException("OP_IF requires one element");
+    public void execute(ExecutionContext context) {
+        if (!context.isExecuting()) {
+            // We are in a skipped branch — nest another false frame without
+            // touching the main stack.
+            context.getExecStack().push(false);
+            return;
         }
-        byte [] value = context.getStack().pop();
-        boolean result = value.length > 0 && value[0] != 0;
-        context.getIfStack().push(result);
 
+        if (context.getStack().size() < 1) {
+            throw new RuntimeException("OP_IF requires one element on the stack");
+        }
+
+        byte[] value = context.getStack().pop();
+        boolean condition = value.length > 0 && value[0] != 0;
+        context.getExecStack().push(condition);
     }
 }
