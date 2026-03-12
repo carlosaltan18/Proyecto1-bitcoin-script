@@ -1,0 +1,17 @@
+# Bitcoin script test cases
+# Format: one script per line. Blank lines and lines starting with # are ignored.
+
+# Push a value, duplicate it, check equality (valid)
+PUSHDATA deadbeef OP_DUP OP_EQUAL
+
+# Arithmetic: 2 + 3 = 5, compare with OP_5 (valid)
+OP_2 OP_3 OP_ADD OP_5 OP_EQUAL
+
+# OP_IF true branch: pushes "hello" onto the stack (valid, unclosed - needs OP_ENDIF)
+OP_1 OP_IF PUSHDATA hello
+
+# OP_IF false branch: "hello" is skipped, stack empty (invalid, unclosed - needs OP_ENDIF)
+OP_0 OP_IF PUSHDATA hello
+
+# OP_NOT on 1: result is 0 (invalid)
+OP_1 OP_NOT

@@ -3,7 +3,9 @@ package org.example;
 import org.example.interpreter.ScriptInterpreter;
 import org.example.parser.ScriptParser;
 import org.example.parser.Token;
+import org.example.runner.ScriptFileRunner;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -11,7 +13,23 @@ import java.util.List;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        boolean trace = false;
+        String filePath = null;
+
+        for (String arg : args) {
+            if (arg.equals("--trace")) {
+                trace = true;
+            } else if (!arg.startsWith("--")) {
+                filePath = arg;
+            }
+        }
+
+        if (filePath != null) {
+            new ScriptFileRunner().run(filePath, trace);
+            return;
+        }
 
         ScriptParser parser = new ScriptParser();
         ScriptInterpreter interpreter = new ScriptInterpreter();
@@ -21,8 +39,8 @@ public class Main {
         String fullScript = scriptSig + " " + scriptPubKey;
 
         try {
-            List<Token> tokens = parser.parseWord(fullScript);
-            boolean valid = interpreter.execute(tokens);
+            List<Token> tokens = parser.parse(fullScript);
+            boolean valid = interpreter.execute(tokens, trace);
             System.out.println("Script válido: " + valid);
 
         } catch (Exception e) {
