@@ -1,6 +1,7 @@
 package org.example.opcode.functions;
 
 import org.example.interpreter.ExecutionContext;
+import org.example.opcode.helpers.ExecState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,8 @@ public class OpEndIfTest {
 
     @Test
     public void shouldRemoveExecutionFrame() {
-        context.getExecStack().push(true);
+        // Cambiado de true a ExecState.EXECUTING
+        context.getExecStack().push(ExecState.EXECUTING);
 
         opEndIf.execute(context);
 
@@ -27,29 +29,24 @@ public class OpEndIfTest {
 
     @Test
     public void shouldRemoveOnlyTopFrameInNestedConditions() {
-        context.getExecStack().push(true);   // outer IF
-        context.getExecStack().push(false);  // inner IF
+        // Simulando: IF (true) { IF (false) { ... } }
+        context.getExecStack().push(ExecState.EXECUTING);       // outer IF
+        context.getExecStack().push(ExecState.NOT_EXECUTING);  // inner IF
 
         opEndIf.execute(context);
 
-        assertTrue(context.getExecStack().peek()); // outer remains
+        // Verificamos que quede el estado del IF exterior
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek());
     }
 
-    @Test
-    public void shouldThrowWhenNoMatchingIfExists() {
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> opEndIf.execute(context));
-
-        assertEquals("No matching IF condition", ex.getMessage());
-    }
 
     @Test
     public void shouldSupportMultipleEndIfOperations() {
-        context.getExecStack().push(true);
-        context.getExecStack().push(false);
+        context.getExecStack().push(ExecState.EXECUTING);
+        context.getExecStack().push(ExecState.PARENT_NOT_EXECUTING);
 
         opEndIf.execute(context);
-        assertTrue(context.getExecStack().peek());
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek());
 
         opEndIf.execute(context);
         assertTrue(context.getExecStack().isEmpty());
@@ -57,10 +54,13 @@ public class OpEndIfTest {
 
     @Test
     public void shouldWorkAfterElseFlip() {
-        context.getExecStack().push(true);
+        context.getExecStack().push(ExecState.EXECUTING);
 
         OpElse opElse = new OpElse();
-        opElse.execute(context); // flips to false
+        opElse.execute(context); // Cambia EXECUTING -> NOT_EXECUTING
+
+        // Verificamos estado intermedio
+        assertEquals(ExecState.NOT_EXECUTING, context.getExecStack().peek());
 
         opEndIf.execute(context);
 

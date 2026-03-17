@@ -72,6 +72,14 @@ public class ScriptInterpreter {
                 }
 
                 context.printStack();
+                if (context.getStack().isEmpty()) {
+                    System.out.println("DEBUG: Stack vacío al terminar");
+                    return false;
+                }
+
+                byte[] top = context.getStack().pop();
+                boolean finalResult = top.length > 0 && top[0] != 0;
+                return finalResult;
             }
 
             // Unclosed OP_IF = malformed script.

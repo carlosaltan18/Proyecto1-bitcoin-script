@@ -33,9 +33,17 @@ public class Main {
 
         ScriptParser parser = new ScriptParser();
         ScriptInterpreter interpreter = new ScriptInterpreter();
-        String scriptSig = "PUSHDATA firma12333 PUSHDATA pubcKKKeyABCC";
+        //String scriptSig = "PUSHDATA firma12333 PUSHDATA pubcKKKeyABCC";
+        String scriptSig = "PUSHDATA firma_valida PUSHDATA clave_publicA PUSHDATA 1";
 
-        String scriptPubKey = "OP_DUP OP_HASH160 PUSHDATA pubc OP_EQUALVERIFY OP_CHECKSIG";
+        //String scriptPubKey = "OP_DUP OP_HASH160 PUSHDATA pubc OP_EQUALVERIFY OP_CHECKSIG";
+        String scriptPubKey =
+                "OP_IF " +
+                        "OP_DUP OP_HASH160 PUSHDATA hash_de_clave_publicA OP_EQUALVERIFY OP_CHECKSIG " +
+                        "OP_ELSE " +
+                        "PUSHDATA 9 " +
+                        "OP_ENDIF";
+
         String fullScript = scriptSig + " " + scriptPubKey;
 
         try {

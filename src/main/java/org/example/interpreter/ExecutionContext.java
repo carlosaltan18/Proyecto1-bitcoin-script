@@ -1,5 +1,6 @@
 package org.example.interpreter;
 
+import org.example.opcode.helpers.ExecState;
 import org.example.stack.StackScript;
 
 /**
@@ -13,7 +14,7 @@ import org.example.stack.StackScript;
  */
 public class ExecutionContext {
     private final StackScript<byte[]> stack = new StackScript<>();
-    private final StackScript<Boolean> execStack = new StackScript<>();
+    private final StackScript<ExecState> execStack = new StackScript<>();
     private boolean traceEnabled = false;
 
     /**
@@ -28,20 +29,18 @@ public class ExecutionContext {
      * Each entry represents one if-level: true = execute this branch,
      * false = skip this branch.
      */
-    public StackScript<Boolean> getExecStack() {
+    public StackScript<ExecState> getExecStack() {
         return execStack;
     }
-
     /**
      * Returns true when every active if-branch says "execute".
      * An empty exec stack means we are at the top level, so always execute.
      */
     public boolean isExecuting() {
-        // We cannot iterate StackScript directly, so we track this via a
-        // separate counter that OpIf/OpElse/OpEndIf maintain.
-        // For now the exec stack itself is the source of truth; the interpreter
-        // calls this helper to decide whether to run the current token.
-        return execStack.isEmpty() || execStack.peek();
+        if (execStack.isEmpty()) {
+            return true;
+        }
+        return execStack.peek() == ExecState.EXECUTING;
     }
 
     /**
