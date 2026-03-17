@@ -3,6 +3,7 @@ package org.example.interpreter;
 import org.example.opcode.Opcode;
 import org.example.opcode.OpcodeImplements;
 import org.example.opcode.functions.OpPushData;
+import org.example.opcode.helpers.ScriptUtils;
 import org.example.parser.Token;
 import org.example.parser.TokenType;
 import org.example.runner.Console;
@@ -77,7 +78,7 @@ public class ScriptInterpreter {
             if (context.getStack().isEmpty()) {
                 return false;
             }
-            return context.getStack().pop()[0] != 0;
+            return ScriptUtils.isTruthy(context.getStack().pop());
 
         } catch (Exception e) {
             if (trace) Console.error(e.getMessage());
