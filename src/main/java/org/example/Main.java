@@ -3,6 +3,7 @@ package org.example;
 import org.example.interpreter.ScriptInterpreter;
 import org.example.parser.ScriptParser;
 import org.example.parser.Token;
+import org.example.runner.Console;
 import org.example.runner.ScriptFileRunner;
 
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
+        Console.install();
 
         boolean trace = false;
         String filePath = null;
@@ -28,6 +31,7 @@ public class Main {
 
         if (filePath != null) {
             new ScriptFileRunner().run(filePath, trace);
+            Console.uninstall();
             return;
         }
 
@@ -49,10 +53,12 @@ public class Main {
         try {
             List<Token> tokens = parser.parse(fullScript);
             boolean valid = interpreter.execute(tokens, trace);
-            System.out.println("Script válido: " + valid);
+            Console.result(valid);
 
         } catch (Exception e) {
-            System.out.println("Error al ejecutar el script: " + e.getMessage());
+            Console.error(e.getMessage());
         }
+
+        Console.uninstall();
     }
 }

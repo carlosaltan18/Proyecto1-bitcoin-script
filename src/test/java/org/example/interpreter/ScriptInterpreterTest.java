@@ -64,7 +64,8 @@ class ScriptInterpreterTest {
         List<Token> tokens = List.of(
                 new Token(TokenType.OPERATOR, "OP_1"),
                 new Token(TokenType.OPERATOR, "OP_IF"),
-                new Token(TokenType.DATA, "hello")
+                new Token(TokenType.DATA, "hello"),
+                new Token(TokenType.OPERATOR, "OP_ENDIF")
         );
         assertTrue(interpreter.execute(tokens));
     }
@@ -95,7 +96,8 @@ class ScriptInterpreterTest {
                 new Token(TokenType.DATA, "result"),
                 new Token(TokenType.OPERATOR, "OP_0"),
                 new Token(TokenType.OPERATOR, "OP_IF"),
-                new Token(TokenType.DATA, "ignored")
+                new Token(TokenType.DATA, "ignored"),
+                new Token(TokenType.OPERATOR, "OP_ENDIF")
         );
         // Stack still has "result" (non-zero first byte 'r') → true
         assertTrue(interpreter.execute(tokens));
@@ -110,9 +112,11 @@ class ScriptInterpreterTest {
                 new Token(TokenType.DATA, "result"),  // stays on stack
                 new Token(TokenType.OPERATOR, "OP_0"),
                 new Token(TokenType.OPERATOR, "OP_IF"),
-                    new Token(TokenType.OPERATOR, "OP_1"),  // skipped
-                    new Token(TokenType.OPERATOR, "OP_IF"), // skipped (nested)
-                        new Token(TokenType.DATA, "inner")  // skipped
+                    new Token(TokenType.OPERATOR, "OP_1"),   // skipped
+                    new Token(TokenType.OPERATOR, "OP_IF"),  // skipped (nested)
+                        new Token(TokenType.DATA, "inner"),  // skipped
+                    new Token(TokenType.OPERATOR, "OP_ENDIF"),
+                new Token(TokenType.OPERATOR, "OP_ENDIF")
         );
         assertTrue(interpreter.execute(tokens));
     }

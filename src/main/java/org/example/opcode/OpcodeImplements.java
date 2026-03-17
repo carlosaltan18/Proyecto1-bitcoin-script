@@ -31,6 +31,8 @@ public class OpcodeImplements {
         OPCODES.put("OP_NUM_EQUALVERIFY", new OpNumEqualVerify());
         OPCODES.put("OP_CHECKMULTISIG", new OpCheckMultiSig());
         OPCODES.put("OP_IF", new OpIf());
+        OPCODES.put("OP_ELSE", new OpElse());
+        OPCODES.put("OP_ENDIF", new OpEndIf());
     }
     public static Opcode get(String name) {
         return OPCODES.get(name);

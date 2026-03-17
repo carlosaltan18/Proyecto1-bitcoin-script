@@ -5,6 +5,7 @@ import org.example.opcode.OpcodeImplements;
 import org.example.opcode.functions.OpPushData;
 import org.example.parser.Token;
 import org.example.parser.TokenType;
+import org.example.runner.Console;
 
 import java.util.List;
 import java.util.Set;
@@ -49,29 +50,23 @@ public class ScriptInterpreter {
 
                 // Skip everything except flow-control ops when in a skipped branch.
                 if (!context.isExecuting() && !isFlowControl) {
-                    if (trace) {
-                        System.out.println("[SKIP]  " + token.value());
-                    }
+                    if (trace) Console.skip(token.value());
                     continue;
                 }
 
                 if (token.type() == TokenType.DATA) {
-                    if (trace) {
-                        System.out.println("[PUSH]  " + token.value());
-                    }
+                    if (trace) Console.push(token.value());
                     new OpPushData(token.value().getBytes()).execute(context);
                 } else {
                     Opcode opcode = OpcodeImplements.get(token.value());
                     if (opcode == null) {
                         throw new RuntimeException("Unknown opcode: " + token.value());
                     }
-                    if (trace) {
-                        System.out.println("[OP]    " + token.value());
-                    }
+                    if (trace) Console.op(token.value());
                     opcode.execute(context);
                 }
 
-                context.printStack();
+                if (trace) Console.stackSize(context.getStack().size());
             }
 
             // Unclosed OP_IF = malformed script.
@@ -85,9 +80,7 @@ public class ScriptInterpreter {
             return context.getStack().pop()[0] != 0;
 
         } catch (Exception e) {
-            if (trace) {
-                System.out.println("[ERROR] " + e.getMessage());
-            }
+            if (trace) Console.error(e.getMessage());
             return false;
         }
     }
