@@ -28,6 +28,12 @@ public class ScriptInterpreter {
             "OP_IF", "OP_ELSE", "OP_ENDIF"
     );
 
+    /**
+     * Opcodes that mark the start of scriptPubKey in a P2PKH script.
+     * Used to print a visual divider in trace mode.
+     */
+    private static final Set<String> P2PKH_BOUNDARY_OPS = Set.of("OP_DUP");
+
     public boolean execute(List<Token> tokens) {
         return execute(tokens, false);
     }
@@ -43,6 +49,9 @@ public class ScriptInterpreter {
         ExecutionContext context = new ExecutionContext();
         context.setTrace(trace);
 
+        boolean isP2PKH = isP2PKHScript(tokens);
+        boolean dividerPrinted = false;
+
         try {
             for (Token token : tokens) {
 
@@ -55,6 +64,14 @@ public class ScriptInterpreter {
                     continue;
                 }
 
+                // Print P2PKH boundary divider just before OP_DUP
+                if (trace && isP2PKH && !dividerPrinted
+                        && token.type() == TokenType.OPERATOR
+                        && P2PKH_BOUNDARY_OPS.contains(token.value())) {
+                    Console.p2pkhDivider();
+                    dividerPrinted = true;
+                }
+
                 if (token.type() == TokenType.DATA) {
                     if (trace) Console.push(token.value());
                     new OpPushData(token.value().getBytes()).execute(context);
@@ -63,11 +80,17 @@ public class ScriptInterpreter {
                     if (opcode == null) {
                         throw new RuntimeException("Unknown opcode: " + token.value());
                     }
-                    if (trace) Console.op(token.value());
+
+                    if (trace) {
+                        String note = branchNote(token.value(), context);
+                        if (note != null) Console.op(token.value(), note);
+                        else Console.op(token.value());
+                    }
+
                     opcode.execute(context);
                 }
 
-                if (trace) Console.stackSize(context.getStack().size());
+                if (trace) Console.stackState(context.getStack());
             }
 
             // Unclosed OP_IF = malformed script.
@@ -84,5 +107,31 @@ public class ScriptInterpreter {
             if (trace) Console.error(e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Returns a human-readable note for OP_ELSE and OP_ENDIF to show
+     * which branch is active after the opcode runs, or null for all others.
+     */
+    private String branchNote(String opName, ExecutionContext context) {
+        return switch (opName) {
+            case "OP_ELSE" -> context.isExecuting() ? "entering else branch" : "leaving else branch";
+            case "OP_ENDIF" -> "closing if block";
+            default -> null;
+        };
+    }
+
+    /**
+     * Returns true if the token list looks like a P2PKH script
+     * (contains both OP_DUP and OP_CHECKSIG).
+     */
+    private boolean isP2PKHScript(List<Token> tokens) {
+        boolean hasDup = false;
+        boolean hasCheckSig = false;
+        for (Token t : tokens) {
+            if ("OP_DUP".equals(t.value())) hasDup = true;
+            if ("OP_CHECKSIG".equals(t.value())) hasCheckSig = true;
+        }
+        return hasDup && hasCheckSig;
     }
 }
