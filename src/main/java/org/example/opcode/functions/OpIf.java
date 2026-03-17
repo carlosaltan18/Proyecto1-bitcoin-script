@@ -12,6 +12,14 @@ import org.example.opcode.helpers.ScriptUtils;
  */
 public class OpIf implements Opcode {
 
+    /**
+     * Pops the top of the main stack and pushes a new frame onto the exec stack.
+     * If already inside a skipped branch, pushes {@link ExecState#PARENT_NOT_EXECUTING}
+     * without touching the main stack.
+     *
+     * @param context the current execution context
+     * @throws RuntimeException if the stack is empty when the condition needs to be read
+     */
     @Override
     public void execute(ExecutionContext context) {
         var execStack = context.getExecStack();

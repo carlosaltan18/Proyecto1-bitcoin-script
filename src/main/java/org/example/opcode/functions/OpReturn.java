@@ -9,6 +9,12 @@ import org.example.opcode.Opcode;
  */
 public class OpReturn implements Opcode {
 
+    /**
+     * Always throws, immediately terminating the script as invalid.
+     *
+     * @param context the current execution context (unused)
+     * @throws RuntimeException unconditionally
+     */
     @Override
     public void execute(ExecutionContext context) {
         throw new RuntimeException("OP_RETURN: script terminated");

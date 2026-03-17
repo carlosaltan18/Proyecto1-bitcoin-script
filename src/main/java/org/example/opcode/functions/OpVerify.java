@@ -10,6 +10,12 @@ import org.example.opcode.helpers.ScriptUtils;
  */
 public class OpVerify implements Opcode {
 
+    /**
+     * Pops the top element and fails the script if it is falsy (zero or empty array).
+     *
+     * @param context the current execution context
+     * @throws RuntimeException if the stack is empty or the top value is false
+     */
     @Override
     public void execute(ExecutionContext context) {
         var stack = context.getStack();
