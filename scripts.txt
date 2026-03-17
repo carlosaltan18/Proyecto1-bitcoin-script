@@ -1,17 +1,61 @@
-# Bitcoin script test cases
-# Format: one script per line. Blank lines and lines starting with # are ignored.
+# Bitcoin Script demo file
+# Format: one script per line. Blank lines and # comments are ignored.
+# Run with: ./mvnw exec:java -Dexec.mainClass=org.example.Main -Dexec.args="scripts.txt --trace"
 
-# Push a value, duplicate it, check equality (valid)
-PUSHDATA deadbeef OP_DUP OP_EQUAL
+# ─────────────────────────────────────────────────────────────────
+# DEMO A — P2PKH (Pay-to-Public-Key-Hash)
+#
+# scriptSig:    <sig> <pubKey>
+# scriptPubKey: OP_DUP OP_HASH160 <pubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+#
+# MockScriptMode: hash160(data) = first 4 bytes of the ASCII string
+# hash160("pubKey") = "pubK"  (first 4 chars)
+# ─────────────────────────────────────────────────────────────────
 
-# Arithmetic: 2 + 3 = 5, compare with OP_5 (valid)
+# PASS: valid signature + matching pubKey hash
+PUSHDATA signature PUSHDATA pubKey OP_DUP OP_HASH160 PUSHDATA pubK OP_EQUALVERIFY OP_CHECKSIG
+
+# FAIL: wrong hash — "pubK" vs "XXXX"
+PUSHDATA signature PUSHDATA pubKey OP_DUP OP_HASH160 PUSHDATA XXXX OP_EQUALVERIFY OP_CHECKSIG
+
+# ─────────────────────────────────────────────────────────────────
+# DEMO B — Control flow: OP_IF / OP_ELSE / OP_ENDIF
+# ─────────────────────────────────────────────────────────────────
+
+# PASS: condition true  → executes IF branch (pushes OP_1), skips ELSE
+OP_1 OP_IF OP_1 OP_ELSE OP_0 OP_ENDIF
+
+# FAIL: condition false → skips IF body, executes ELSE (pushes OP_0)
+OP_0 OP_IF OP_1 OP_ELSE OP_0 OP_ENDIF
+
+# PASS: nested OP_IF — both outer and inner condition true
+OP_1 OP_IF OP_1 OP_IF OP_1 OP_ENDIF OP_ENDIF
+
+# PASS: OP_NOTIF — executes body when condition is false
+OP_0 OP_NOTIF OP_1 OP_ENDIF
+
+# ─────────────────────────────────────────────────────────────────
+# DEMO C (optional/advanced) — Multisig 2-of-3
+#
+# Stack layout: OP_0 <sig1> <sig2> OP_2 <pub1> <pub2> <pub3> OP_3
+# OP_0 is the mandatory dummy element (historical Bitcoin bug)
+# ─────────────────────────────────────────────────────────────────
+
+# PASS: 2-of-3 multisig with simulated signatures
+OP_0 PUSHDATA sig1 PUSHDATA sig2 OP_2 PUSHDATA pub1 PUSHDATA pub2 PUSHDATA pub3 OP_3 OP_CHECKMULTISIG
+
+# ─────────────────────────────────────────────────────────────────
+# Arithmetic demos
+# ─────────────────────────────────────────────────────────────────
+
+# PASS: 2 + 3 = 5
 OP_2 OP_3 OP_ADD OP_5 OP_EQUAL
 
-# OP_IF true branch: pushes "hello" onto the stack (valid, unclosed - needs OP_ENDIF)
-OP_1 OP_IF PUSHDATA hello
+# PASS: 5 - 3 = 2
+OP_5 OP_3 OP_SUB OP_2 OP_EQUAL
 
-# OP_IF false branch: "hello" is skipped, stack empty (invalid, unclosed - needs OP_ENDIF)
-OP_0 OP_IF PUSHDATA hello
+# PASS: 3 < 5
+OP_3 OP_5 OP_LESSTHAN
 
-# OP_NOT on 1: result is 0 (invalid)
-OP_1 OP_NOT
+# PASS: 5 > 3
+OP_5 OP_3 OP_GREATERTHAN

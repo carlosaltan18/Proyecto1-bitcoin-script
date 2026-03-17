@@ -2,6 +2,7 @@ package org.example.opcode.functions;
 
 import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
+import org.example.opcode.helpers.ScriptUtils;
 
 /**
  * A class that implements OpBoolAnd to Operate the two last elements and do a operation And
@@ -18,8 +19,8 @@ public class OpBoolAnd implements Opcode {
         if (context.getStack().size() < 2)
             throw new RuntimeException("OP_BOOLAND requires two elements");
 
-        boolean b = context.getStack().pop()[0] != 0;
-        boolean a = context.getStack().pop()[0] != 0;
+        boolean b = ScriptUtils.isTruthy(context.getStack().pop());
+        boolean a = ScriptUtils.isTruthy(context.getStack().pop());
 
         boolean result = a && b;
 

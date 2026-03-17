@@ -2,6 +2,7 @@ package org.example.opcode.functions;
 
 import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
+import org.example.opcode.helpers.ScriptUtils;
 
 /**
  * A class that serves to negate an operation
@@ -18,7 +19,7 @@ public class OpNot implements Opcode {
         if (context.getStack().size() < 1)
             throw new RuntimeException("OP_NOT requires one element");
 
-        boolean value = context.getStack().pop()[0] != 0;
+        boolean value = ScriptUtils.isTruthy(context.getStack().pop());
 
         context.getStack().push(new byte[]{(byte) (value ? 0 : 1)});
     }

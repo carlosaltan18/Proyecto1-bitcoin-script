@@ -29,15 +29,14 @@ public class ScriptFileRunner {
             }
 
             scriptNumber++;
-            System.out.println("--- Script #" + scriptNumber + " ---");
-            System.out.println("  " + trimmed);
+            Console.scriptHeader(scriptNumber, trimmed);
 
             try {
                 List<Token> tokens = parser.parse(trimmed);
                 boolean valid = interpreter.execute(tokens, trace);
-                System.out.println("  Result: " + (valid ? "VALID" : "INVALID"));
+                Console.result(valid);
             } catch (Exception e) {
-                System.out.println("  Error: " + e.getMessage());
+                Console.error(e.getMessage());
             }
         }
     }
