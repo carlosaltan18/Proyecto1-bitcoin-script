@@ -11,13 +11,9 @@ import org.example.opcode.Opcode;
 public class OpEndIf implements Opcode {
     @Override
     public void execute(ExecutionContext context) {
-        var executionStack = context.getExecStack();
+        var execStack = context.getExecStack();
+        if (execStack.isEmpty()) throw new RuntimeException("OP_ENDIF sin OP_IF");
 
-        if (executionStack.isEmpty()) {
-            throw new RuntimeException("No matching IF condition");
-        }
-
-        // Close the current conditional frame
-        executionStack.pop();
+        execStack.pop();
     }
 }

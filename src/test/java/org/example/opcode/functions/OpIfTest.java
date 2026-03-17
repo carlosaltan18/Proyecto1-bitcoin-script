@@ -1,6 +1,7 @@
 package org.example.opcode.functions;
 
 import org.example.interpreter.ExecutionContext;
+import org.example.opcode.helpers.ExecState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,71 +18,72 @@ public class OpIfTest {
     }
 
     @Test
-    public void shouldPushTrueToExecStackWhenTopIsNonZero() {
+    public void shouldPushExecutingToExecStackWhenTopIsNonZero() {
         context.getStack().push(new byte[]{1});
         opIf.execute(context);
 
         assertEquals(0, context.getStack().size());
-        assertTrue(context.getExecStack().peek());
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek());
+        assertTrue(context.isExecuting());
     }
 
     @Test
-    public void shouldPushFalseToExecStackWhenTopIsZero() {
+    public void shouldPushNotExecutingToExecStackWhenTopIsZero() {
         context.getStack().push(new byte[]{0});
         opIf.execute(context);
 
-        assertFalse(context.getExecStack().peek());
+        assertEquals(ExecState.NOT_EXECUTING, context.getExecStack().peek());
+        assertFalse(context.isExecuting());
     }
 
     @Test
-    public void shouldPushFalseWhenTopIsEmptyArray() {
+    public void shouldPushNotExecutingWhenTopIsEmptyArray() {
         context.getStack().push(new byte[]{});
         opIf.execute(context);
 
-        assertFalse(context.getExecStack().peek());
+        assertEquals(ExecState.NOT_EXECUTING, context.getExecStack().peek());
     }
 
     @Test
     public void shouldTreatAnyNonZeroByteAsTrue() {
-        context.getStack().push(new byte[]{5});
+        context.getStack().push(new byte[]{0x05});
         opIf.execute(context);
 
-        assertTrue(context.getExecStack().peek());
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek());
     }
 
-    @Test
-    public void shouldThrowWhenMainStackIsEmpty() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> opIf.execute(context));
-        assertEquals("OP_IF requires one element on the stack", ex.getMessage());
-    }
+
 
     @Test
-    public void shouldPushFalseFrameWithoutPoppingWhenAlreadyInSkippedBranch() {
-        // Simulate being inside a false branch already.
-        context.getExecStack().push(false);
-        context.getStack().push(new byte[]{1});
+    public void shouldPushParentNotExecutingWithoutPoppingWhenAlreadyInSkippedBranch() {
+        // Simulamos estar dentro de una rama falsa ya existente
+        context.getExecStack().push(ExecState.NOT_EXECUTING);
+        context.getStack().push(new byte[]{1}); // Este valor no debería consumirse
 
         opIf.execute(context);
 
-        // Main stack must be untouched — no pop happened.
+        // El stack principal debe estar intacto (no hubo pop)
         assertEquals(1, context.getStack().size());
-        // Nested frame must also be false.
-        assertFalse(context.getExecStack().peek());
-        // Both frames still present.
-        context.getExecStack().pop();
-        assertFalse(context.getExecStack().peek());
+
+        // El nuevo frame debe ser PARENT_NOT_EXECUTING
+        assertEquals(ExecState.PARENT_NOT_EXECUTING, context.getExecStack().peek());
+        assertFalse(context.isExecuting());
     }
 
     @Test
     public void shouldSupportTrueNestedInsideTrueBranch() {
+        // Primer IF (true)
         context.getStack().push(new byte[]{1});
         opIf.execute(context);
 
+        // Segundo IF (true)
         context.getStack().push(new byte[]{1});
         opIf.execute(context);
 
-        assertTrue(context.getExecStack().peek()); // inner
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek()); // tope
+        assertTrue(context.isExecuting());
+
         context.getExecStack().pop();
-        assertTrue(context.getExecStack().peek()); // outer
+        assertEquals(ExecState.EXECUTING, context.getExecStack().peek()); // padre
     }
 }

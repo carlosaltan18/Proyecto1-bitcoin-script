@@ -2,6 +2,7 @@ package org.example.opcode.functions;
 
 import org.example.interpreter.ExecutionContext;
 import org.example.opcode.Opcode;
+import org.example.opcode.helpers.ExecState;
 
 /**
  * OP_IF pops the top of the main stack and pushes a frame onto the exec stack.
@@ -12,19 +13,19 @@ public class OpIf implements Opcode {
 
     @Override
     public void execute(ExecutionContext context) {
+        var execStack = context.getExecStack();
+
         if (!context.isExecuting()) {
-            // We are in a skipped branch — nest another false frame without
-            // touching the main stack.
-            context.getExecStack().push(false);
+            execStack.push(ExecState.PARENT_NOT_EXECUTING);
             return;
         }
 
-        if (context.getStack().size() < 1) {
-            throw new RuntimeException("OP_IF requires one element on the stack");
+        if (context.getStack().isEmpty()) {
+            throw new RuntimeException("OP_IF requiere un elemento en el stack");
         }
-
         byte[] value = context.getStack().pop();
         boolean condition = value.length > 0 && value[0] != 0;
-        context.getExecStack().push(condition);
+
+        execStack.push(condition ? ExecState.EXECUTING : ExecState.NOT_EXECUTING);
     }
 }
