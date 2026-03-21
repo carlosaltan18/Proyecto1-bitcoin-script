@@ -29,6 +29,17 @@ cd Proyecto1-bitcoin-script
 
 # Windows
 mvnw.cmd exec:java -Dexec.mainClass=org.example.Main -Dexec.args="scripts.txt --trace"
+Note: In PowerShell, running mvnw.cmd without a path prefix may fail.
+
+Use .\ to execute the Maven wrapper:
+
+.\mvnw.cmd exec:java -Dexec.mainClass=org.example.Main -Dexec.args="scripts.txt --trace"
+
+To run without trace:
+
+.\mvnw.cmd exec:java -Dexec.mainClass=org.example.Main -Dexec.args="scripts.txt"
+
+Alternatively, you can run the commands in Command Prompt (CMD), where mvnw.cmd works without the .\ prefix.
 ```
 
 ---
